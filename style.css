@@ -197,4 +197,19 @@ h2 {
     opacity: 1;
   }
 }
+.mensaje-final {
+  display: none;
+  background-color: rgba(5, 44, 173, 0.85);
+  color: #fff;
+  padding: 30px;
+  font-size: 24px;
+  text-align: center;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  z-index: 999;
+  
+}
 

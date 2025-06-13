@@ -1,4 +1,4 @@
-// HERENCIA//
+// HERENCIA//                             
 class ObjetoJuego {
   constructor(container, x, y, width, height) {
     this.container = container;
@@ -20,9 +20,8 @@ class ObjetoJuego {
     this.element.style.left = `${this.x}px`;
     this.element.style.top = `${this.y}px`;
   }
-
-  mover() {}
-
+ //Vacío a Propósito//
+  mover() { }  
   colisionaCon(objeto) {
     return (
       this.x < objeto.x + objeto.width &&
@@ -32,8 +31,8 @@ class ObjetoJuego {
     );
   }
 }
-
-class Personaje extends ObjetoJuego {
+// ejemplo HERENCIA//
+class Personaje extends ObjetoJuego { 
   constructor(container, imgSrc, x, y) {
     super(container, x, y, 70, 80);
 
@@ -50,10 +49,10 @@ class Personaje extends ObjetoJuego {
     this.img.style.transition = "transform 0.2s ease";
     this.element.appendChild(this.img);
   }
-
+  // HEREDA EL METODO MOVER Y IMPLEMENTA SUS CARACTERISTICA(POLIMORFISMO)  
+  // El parametro (evento) permite que el personaje reaccione a las acciones del usuario  
   mover(evento) {
     const contRect = this.container.getBoundingClientRect();
-
     if (evento.key === "ArrowRight") {
       this.x += this.velocidad;
       const maxX = contRect.width - this.width;
@@ -91,20 +90,20 @@ class Personaje extends ObjetoJuego {
     }, 20);
   }
 
-caer() {
-  const suelo = 190; // Altura Y del suelo donde el personaje debe aterrizar
+  caer() {
+    const suelo = 190; // Altura Y del suelo donde el personaje debe aterrizar
 
-  const gravedad = setInterval(() => {
-    if (this.y + 8 >= suelo) {
-      this.y = suelo;
-      clearInterval(gravedad);
-      this.saltando = false;
-    } else {
-      this.y += 8;
-    }
-    this.actualizarPosicion();
-  }, 20);
-}
+    const gravedad = setInterval(() => {
+      if (this.y + 8 >= suelo) {
+        this.y = suelo;
+        clearInterval(gravedad);
+        this.saltando = false;
+      } else {
+        this.y += 8;
+      }
+      this.actualizarPosicion();
+    }, 20);
+  }
 
 
   agacharse() {
@@ -114,8 +113,8 @@ caer() {
     }, 800);
   }
 }
-
-class Moneda extends ObjetoJuego {
+// HERENCIA//
+class Adversario extends ObjetoJuego {
   constructor(container, index, total) {
     const width = 60;
     const height = 60;
@@ -143,6 +142,11 @@ class Moneda extends ObjetoJuego {
     this.element.appendChild(img);
   }
 
+
+  // HEREDA EL METODO MOVER Y IMPLEMENTA SUS CARACTERISTICA(POLIMORFISMO)
+  // no recibe parametros(evento) es porque su movimiento 
+  // es autónomo y predefinido, no está impulsado por la
+  //  interacción directa del usuario.
   mover() {
     const rangoMovimiento = 20;
     this.x += this.velocidadX;
@@ -173,7 +177,7 @@ class Game {
 
     setTimeout(() => {
       for (let i = 0; i < 8; i++) {
-        const moneda = new Moneda(this.container, i, 6);
+        const moneda = new Adversario(this.container, i, 6);
         this.monedas.push(moneda);
       }
       this.iniciarMovimientoMonedas();
@@ -229,30 +233,41 @@ class Game {
     this.puntosElement.textContent = `Jugadores: ${this.puntuacion}`;
   }
 
-  iniciarTemporizador() {
-    const tiempoElemento = document.getElementById("tiempo");
+ iniciarTemporizador() {
+  const tiempoElemento = document.getElementById("tiempo");
 
-    this.intervaloTiempo = setInterval(() => {
-      this.tiempo--;
-      tiempoElemento.textContent = `Tiempo: ${this.tiempo}`;
+  this.intervaloTiempo = setInterval(() => {
+    this.tiempo--;
+    tiempoElemento.textContent = `Tiempo: ${this.tiempo}`;
 
-      if (this.tiempo <= 0) {
-        clearInterval(this.intervaloTiempo);
+    if (this.tiempo <= 0) {
+      clearInterval(this.intervaloTiempo);
 
-        const audio = document.getElementById("musica-fondo");
-        if (audio) {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-        if (this.musicaTimeout) {
-          clearTimeout(this.musicaTimeout);
-        }
-
-        alert(`¡Tiempo terminado! Puntaje final: ${this.puntuacion}`);
-        location.reload();
+      const audio = document.getElementById("musica-fondo");
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
       }
-    }, 1000);
-  }
+
+      if (this.musicaTimeout) {
+        clearTimeout(this.musicaTimeout);
+      }
+
+      // Mostrar mensaje final en pantalla
+      const mensajeFinal = document.getElementById("mensaje-final");
+      if (mensajeFinal) {
+        mensajeFinal.textContent = `⏰ ¡Tiempo terminado! Puntaje final: ${this.puntuacion}`;
+        mensajeFinal.style.display = "block";
+      }
+
+      // Esperar 5 segundos antes de recargar la página
+      setTimeout(() => {
+        location.reload();
+      }, 5000);
+    }
+  }, 1000);
+}
+
 }
 
 // Inicializar juego
